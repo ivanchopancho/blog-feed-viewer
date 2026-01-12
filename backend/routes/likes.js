@@ -1,5 +1,6 @@
 import express from "express";
 import Like from "../models/like.js";
+import Post from "../models/post.js"
 
 
 const router = express.Router();
@@ -7,13 +8,33 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
     try {
-        const like = await Like.create(req.body);
-        res.status(201).json(like);
-    } catch (err) {
-        if (err.code === 11000) {
-            return res.status(409).json({ error: "Already liked" });
+        const { user, post } = req.body;
+
+        const existingLike = await Like.findOne({ user, post });
+        const targetPost = await Post.findById(post);
+
+        if (!targetPost) {
+            return res.status(409).json({ error: "Post not found" });
         }
-        res.status(400).json({ error: err.message });
+        let liked;
+
+        if (existingLike) {
+            await existingLike.deleteOne();
+            targetPost.likesCount -= 1;
+            liked = false;
+        } else {
+            await Like.create({ user, post });
+            targetPost.likesCount += 1;
+            liked = true;
+        }
+        await targetPost.save();
+
+        res.jason({
+            liked,
+            likesCount: targetPost,
+        });
+    } catch {
+        res.status(500).json({ error: err.message });
     }
 });
 
