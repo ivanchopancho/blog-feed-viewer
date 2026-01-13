@@ -29,11 +29,11 @@ router.post("/", async (req, res) => {
         }
         await targetPost.save();
 
-        res.jason({
+        res.json({
             liked,
             likesCount: targetPost,
         });
-    } catch {
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });

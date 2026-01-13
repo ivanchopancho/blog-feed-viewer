@@ -46,7 +46,7 @@ router.put("/:commentId", async (req, res) => {
             { new: true, runValidators: true }
         ).populate("author");
 
-        if (!comment) {
+        if (!updatedComment) {
             return res.status(404).json({ error: "Comment not found" });
         }
 

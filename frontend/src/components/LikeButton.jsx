@@ -18,13 +18,19 @@ function LikeButton({ postId, initialLikes, initialLiked }) {
                 },
                 body: JSON.stringify({
                     post: postId,
-                    user: "userhard"
+                    user: "69576f9d2418bc228e399da6"
                 }),
             });
 
+
+
             const data = await res.json();
 
-            setLikes(data.likesCount);
+            setLikes(
+                typeof data.likesCount === "number"
+                    ? data.likesCount
+                    : data.likesCount?.likesCount ?? 0
+            );
             setLiked(!liked);
         } catch (err) {
             console.error("Failed to toggle like", err);
