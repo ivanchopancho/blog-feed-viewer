@@ -1,6 +1,6 @@
 import Post from "./Post";
 
-function PostList({ posts }) {
+function PostList({ posts, onPostUpdated, onPostDeleted }) {
 
 
     //console.log(posts.map(p => p._id));
@@ -9,7 +9,12 @@ function PostList({ posts }) {
     return (
         <div>
             {posts.map(post => (
-                <Post key={post._id} post={post} />
+                <Post
+                    key={post._id}
+                    post={post}
+                    onPostDeleted={onPostDeleted}
+                    onPostUpdated={onPostUpdated}
+                />
             ))}
         </div>
     );

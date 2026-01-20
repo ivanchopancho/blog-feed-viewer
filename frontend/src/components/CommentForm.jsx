@@ -6,6 +6,8 @@ function CommentForm({ postId, onCommentAdded }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!content.trim()) return;
+
         const res = await fetch("http://localhost:5000/comments", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -19,6 +21,8 @@ function CommentForm({ postId, onCommentAdded }) {
         const newComment = await res.json();
         onCommentAdded(newComment);
         setContent("");
+
+
     };
 
     return (
