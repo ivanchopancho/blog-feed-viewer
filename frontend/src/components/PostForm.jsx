@@ -2,23 +2,31 @@ import { useState } from "react";
 
 function PostForm({ onPostCreated }) {
     const [content, setContent] = useState("");
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("http://localhost:5000/posts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                content,
-                author: "69576f9d2418bc228e399da6",
-            }),
-        });
+        if (!content.trim()) return;
 
-        const newPost = await res.json();
-        console.log("CREATED POST", newPost);
-        onPostCreated(newPost);
-        setContent("");
+        try {
+            const res = await fetch("http://localhost:5000/posts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ content }),
+            });
+
+            if (!res.ok) {
+                throw new Error("Unauthorized or invalid post");
+            }
+
+            const newPost = await res.json();
+            onPostCreated(newPost);
+            setContent("");
+        } catch (err) {
+            setError(err.message);
+        }
     };
 
     {/* 
@@ -36,6 +44,8 @@ function PostForm({ onPostCreated }) {
                 placeholder={"Write a post..."}
             />
             <button type={"submit"}>Post</button>
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
 
     );

@@ -20,12 +20,16 @@ function App() {
           credentials: "include",
         });
 
-        if (!res.ok) {
+        if (res.ok) {
           const data = await res.json();
-          setUser(data.user);
+          setUser(data);
+        } else {
+          setUser(null);
         }
       } catch {
-        //
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -56,9 +60,7 @@ function App() {
     fetchPosts();
   }, [user]);
 
-  if (!user) {
-    return <LoginPage onLogin={setUser} />
-  }
+
 
   const handlePostDeleted = (postId) => {
     setPosts((prev) => prev.filter((p) => p._id !== postId));
@@ -70,13 +72,34 @@ function App() {
     );
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:5000/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {
+      //
+    } finally {
+      setUser(null);
+      setPosts([]);
+    }
+  };
+
 
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  if (!user) {
+    return <LoginPage onLogin={setUser} />
+  }
+
   return (
     <div className='app'>
+      <button onClick={handleLogout} className='logout-button'>
+        Logout
+      </button>
       <h1 className='feed-title'>Feed</h1>
       <PostForm onPostCreated={(newPost) => setPosts((prev) => [newPost, ...prev])} />
       <PostList posts={posts} onPostUpdated={handlePostUpdated} onPostDeleted={handlePostDeleted} />
@@ -86,4 +109,4 @@ function App() {
 
 }
 
-export default App
+export default App;

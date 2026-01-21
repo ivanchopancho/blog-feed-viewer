@@ -24,6 +24,7 @@ function Post({ post, onPostDeleted, onPostUpdated }) {
 
         await fetch(`http://localhost:5000/posts/${post._id}`, {
             method: "DELETE",
+            credentials: "include",
         });
 
         onPostDeleted(post._id);
@@ -38,6 +39,7 @@ function Post({ post, onPostDeleted, onPostUpdated }) {
                     method: "PUT",
                     headers: { "Content-type": "application/json" },
                     body: JSON.stringify({ content }),
+                    credentials: "include",
                 }
             );
 

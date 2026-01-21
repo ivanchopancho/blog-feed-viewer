@@ -2,18 +2,25 @@ import express from "express";
 import Post from "../models/post.js"
 import Comment from "../models/comment.js";
 import Like from "../models/like.js";
-
+import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
 
 //#CREATE
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
     try {
-        const post = await Post.create(req.body);
-        res.status(201).json(post);
+        const post = await Post.create({
+            content: req.body.content,
+            author: req.user._id,
+        });
+
+        const populatedPost = await post.populate("author");
+
+        res.status(201).json(populatedPost);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
+
 });
 
 //#FETCH
@@ -27,40 +34,49 @@ router.get("/", async (req, res) => {
 });
 
 //#EDIT
-router.put("/:postId", async (req, res) => {
+router.put("/:postId", requireAuth, async (req, res) => {
     try {
-        const updatedPost = await Post.findByIdAndUpdate(
-            req.params.postId,
-            { content: req.body.content },
-            { new: true, runValidators: true }
-        ).populate("author");
+        const post = await Post.findById(req.params.postId);
 
-        if (!updatedPost) {
-            return res.status(404).json({ error: "Post not found " });
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
         }
 
-        res.json(updatedPost);
+        if (!post.author === req.user._id) {
+            return res.status(403).json({ error: "Not allowed" });
+        }
+
+        post.content = req.body.content;
+        await post.save();
+
+        const populatedPost = await post.populate("author");
+        res.json(populatedPost);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 });
 
 //#DELETE
-router.delete("/:postId", async (req, res) => {
+router.delete("/:postId", requireAuth, async (req, res) => {
     try {
-        const post = await Post.findByIdAndDelete(req.params.postId);
+        const post = await Post.findById(req.params.postId);
 
         if (!post) {
             return res.status(404).json({ error: "Post not found" });
         }
 
-        //prevents orphaned data (likes and posts)
+        if (!post.author === req.user._id) {
+            return res.status(403).json({ error: "Not allowed" });
+        }
+
+        await post.deleteOne();
+
         await Comment.deleteMany({ post: post._id });
         await Like.deleteMany({ post: post._id });
 
         res.json({ message: "Post deleted" });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ error: err.message });
     }
 });
 
