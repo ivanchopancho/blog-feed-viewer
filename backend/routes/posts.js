@@ -24,10 +24,23 @@ router.post("/", requireAuth, async (req, res) => {
 });
 
 //#FETCH
-router.get("/", async (req, res) => {
+router.get("/", requireAuth, async (req, res) => {
     try {
-        const posts = await Post.find().populate("author");
-        res.json(posts);
+        const posts = await Post.find()
+            .populate("author")
+            .lean();
+
+        const likes = await Like.find({ user: req.user._id });
+        const likedPostIds = new Set(
+            likes.map(like => like.post.toString())
+        );
+
+        const postsWithLikes = posts.map(post => ({
+            ...post,
+            likedByCurrentUser: likedPostIds.has(post._id.toString())
+        }));
+
+        res.json(postsWithLikes);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

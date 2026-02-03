@@ -37,7 +37,7 @@ function PostForm({ onPostCreated }) {
 
     return (
 
-        <form onSubmit={handleSubmit}>
+        <form className="post-form" onSubmit={handleSubmit}>
             <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}

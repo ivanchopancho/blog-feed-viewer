@@ -100,9 +100,14 @@ function App() {
       <button onClick={handleLogout} className='logout-button'>
         Logout
       </button>
-      <h1 className='feed-title'>Feed</h1>
-      <PostForm onPostCreated={(newPost) => setPosts((prev) => [newPost, ...prev])} />
-      <PostList posts={posts} onPostUpdated={handlePostUpdated} onPostDeleted={handlePostDeleted} />
+      <h1 className='feed-title'>Post<span>It!</span></h1>
+      <PostForm
+        onPostCreated={(newPost) => setPosts((prev) => [newPost, ...prev])}
+      />
+      <PostList posts={posts}
+        onPostUpdated={handlePostUpdated}
+        onPostDeleted={handlePostDeleted} user={user}
+      />
     </div>
   )
 

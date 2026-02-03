@@ -1,37 +1,27 @@
 import { useState } from "react";
 
-function LikeButton({ postId, initialLikes, initialLiked }) {
-    const [likes, setLikes] = useState(initialLikes);
-    const [liked, setLiked] = useState(initialLiked);
+function LikeButton({ postId, likes, liked, setLikes, setLiked }) {
+
     const [loading, setLoading] = useState(false);
 
     const toggleLike = async () => {
         if (loading) return;
+        setLoading(true);
 
         try {
-            setLoading(true);
-
             const res = await fetch("http://localhost:5000/likes", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    post: postId,
-                    user: "69576f9d2418bc228e399da6"
-                }),
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ post: postId }),
             });
 
-
+            if (!res.ok) return;
 
             const data = await res.json();
 
-            setLikes(
-                typeof data.likesCount === "number"
-                    ? data.likesCount
-                    : data.likesCount?.likesCount ?? 0
-            );
-            setLiked(!liked);
+            setLiked(data.liked);
+            setLikes(data.likesCount);
         } catch (err) {
             console.error("Failed to toggle like", err);
         } finally {

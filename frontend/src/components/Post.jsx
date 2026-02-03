@@ -6,11 +6,15 @@ import { useState, useEffect } from "react";
 
 
 
-function Post({ post, onPostDeleted, onPostUpdated }) {
+function Post({ post, user, onPostDeleted, onPostUpdated }) {
 
+    const owned = post.author?._id === user?._id;
     const [comments, setComments] = useState([]);
     const [editing, setEditing] = useState(false);
     const [content, setContent] = useState(post.content);
+    const [likes, setLikes] = useState(post.likesCount);
+    const [liked, setLiked] = useState(post.likedByCurrentUser);
+
 
 
     useEffect(() => {
@@ -75,12 +79,19 @@ function Post({ post, onPostDeleted, onPostUpdated }) {
             <div className="post-actions">
                 <LikeButton
                     postId={post._id}
-                    initialLikes={post.likesCount}
-                    initialLiked={false}
+                    likes={likes}
+                    liked={liked}
+                    setLikes={setLikes}
+                    setLiked={setLiked}
                 />
-                <button onClick={() => setEditing(true)}>Edit</button>
-                <button onClick={handleDelete}>Delete</button>
-
+                {owned && (
+                    <>
+                        <button onClick={() => setEditing(true)}>Edit</button>
+                        <button
+                            className='delete'
+                            onClick={handleDelete}>Delete</button>
+                    </>
+                )}
             </div>
 
             <div className="post-comments">

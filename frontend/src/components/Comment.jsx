@@ -1,8 +1,8 @@
 function Comment({ comment }) {
     return (
-        <div style={{ marginLeft: "1rem" }}>
-            <p>{comment.content}</p>
-            <small>{comment.author?.username}</small>
+        <div className="comment">
+            <p className="comment-content">{comment.content}</p>
+            <small className="comment-author">{comment.author?.username}</small>
         </div>
     );
 }

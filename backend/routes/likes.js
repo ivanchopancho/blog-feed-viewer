@@ -1,14 +1,16 @@
 import express from "express";
 import Like from "../models/like.js";
 import Post from "../models/post.js"
+import requireAuth from "../middleware/requireAuth.js";
 
 
 const router = express.Router();
 
 
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
     try {
-        const { user, post } = req.body;
+        const user = req.user._id;
+        const { post } = req.body;
 
         const existingLike = await Like.findOne({ user, post });
         const targetPost = await Post.findById(post);
@@ -31,7 +33,7 @@ router.post("/", async (req, res) => {
 
         res.json({
             liked,
-            likesCount: targetPost,
+            likesCount: targetPost.likesCount,
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
