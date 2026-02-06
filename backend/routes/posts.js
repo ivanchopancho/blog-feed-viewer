@@ -14,9 +14,14 @@ router.post("/", requireAuth, async (req, res) => {
             author: req.user._id,
         });
 
-        const populatedPost = await post.populate("author");
+        const populatedPost = await post.populate("author", "username");
 
-        res.status(201).json(populatedPost);
+        res.status(201).json({
+            ...populatedPost.toObject(),
+            likesCount: 0,
+            likedByCurrentUser: false,
+            owned: true,
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -27,6 +32,7 @@ router.post("/", requireAuth, async (req, res) => {
 router.get("/", requireAuth, async (req, res) => {
     try {
         const posts = await Post.find()
+            .sort({ createdAt: -1 })
             .populate("author")
             .lean();
 
@@ -55,7 +61,7 @@ router.put("/:postId", requireAuth, async (req, res) => {
             return res.status(404).json({ error: "Post not found" });
         }
 
-        if (!post.author === req.user._id) {
+        if (!post.author.equals(req.user._id)) {
             return res.status(403).json({ error: "Not allowed" });
         }
 
@@ -78,7 +84,7 @@ router.delete("/:postId", requireAuth, async (req, res) => {
             return res.status(404).json({ error: "Post not found" });
         }
 
-        if (!post.author === req.user._id) {
+        if (!post.author.equals(req.user._id)) {
             return res.status(403).json({ error: "Not allowed" });
         }
 

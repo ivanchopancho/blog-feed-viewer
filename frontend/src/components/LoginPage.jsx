@@ -87,68 +87,73 @@ function LoginPage({ onLogin }) {
     };
 
     return (
-        <div className="login-page">
-            <h2>Login</h2>
+        <div className="auth-page">
+            <div className="auth-card">
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
+                <h2 className="auth-title">PostIt!</h2>
+                <p className="auth-subtitle">{showRegister ? "Create an account" : "Sign in to continue"}</p>
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-
-                <button type="submit" disabled={loading}>
-                    {loading ? "Logging in..." : "Login"}
-                </button>
-
-                {error && <p style={{ color: "red" }}>{error}</p>}
-            </form>
-
-            <button onClick={() => setShowRegister(true)}>
-                Register
-            </button>
-
-            {showRegister && (
-                <form onSubmit={handleRegister}>
-
-                    <input
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-
+                <form className="auth-form" onSubmit={handleSubmit}>
                     <input
                         type="email"
                         placeholder="Email"
-                        value={regEmail}
-                        onChange={(e) => setRegEmail(e.target.value)}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
 
                     <input
                         type="password"
                         placeholder="Password"
-                        value={regPassword}
-                        onChange={(e) => setRegPassword(e.target.value)}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                     />
 
-                    <button type="submit">
-                        Create account
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Logging in..." : "Login"}
                     </button>
+
+                    {error && <p style={{ color: "red" }}>{error}</p>}
                 </form>
-            )}
+
+                <button className="primary" onClick={() => setShowRegister(true)}>
+                    Register
+                </button>
+
+                {showRegister && (
+                    <form onSubmit={handleRegister}>
+
+                        <input
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={regEmail}
+                            onChange={(e) => setRegEmail(e.target.value)}
+                            required
+                        />
+
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={regPassword}
+                            onChange={(e) => setRegPassword(e.target.value)}
+                            required
+                        />
+
+                        <button className="link-button" type="submit">
+                            Create account
+                        </button>
+                    </form>
+                )}
+
+            </div>
         </div>
     );
 }
