@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import { useState } from "react";
 
 function LoginPage({ onLogin }) {
@@ -16,7 +17,7 @@ function LoginPage({ onLogin }) {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/auth/login", {
+            const res = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -45,7 +46,7 @@ function LoginPage({ onLogin }) {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/auth/register", {
+            const res = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -62,7 +63,7 @@ function LoginPage({ onLogin }) {
             }
 
             //auto-login after register
-            const loginRes = await fetch("http://localhost:5000/auth/login", {
+            const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

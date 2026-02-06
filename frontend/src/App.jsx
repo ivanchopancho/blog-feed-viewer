@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './config/api';
 import { useState, useEffect } from 'react';
 import PostList from "./components/PostList"
 import PostForm from './components/PostForm';
@@ -16,7 +17,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch("http://localhost:5000/auth/me", {
+        const res = await fetch(`${API_BASE_URL}/auth/me`, {
           credentials: "include",
         });
 
@@ -42,7 +43,7 @@ function App() {
 
     const fetchPosts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/posts", {
+        const res = await fetch(`${API_BASE_URL}/posts`, {
           credentials: "include",
         });
         if (!res.ok) {
@@ -74,7 +75,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/auth/logout", {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import { useState } from "react";
 
 function LikeButton({ postId, likes, liked, setLikes, setLiked }) {
@@ -9,7 +10,7 @@ function LikeButton({ postId, likes, liked, setLikes, setLiked }) {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/likes", {
+            const res = await fetch(`${API_BASE_URL}/likes`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

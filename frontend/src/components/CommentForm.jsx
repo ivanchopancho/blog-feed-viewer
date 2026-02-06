@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config/api";
 
 function CommentForm({ postId, onCommentAdded }) {
     const [content, setContent] = useState("");
@@ -13,7 +14,7 @@ function CommentForm({ postId, onCommentAdded }) {
         }
 
         try {
-            const res = await fetch("http://localhost:5000/comments", {
+            const res = await fetch(`${API_BASE_URL}/comments`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config/api';
 import '../Post.css'
 import LikeButton from "./LikeButton";
 import CommentList from "./CommentList";
@@ -18,7 +19,7 @@ function Post({ post, user, onPostDeleted, onPostUpdated }) {
 
 
     useEffect(() => {
-        fetch(`http://localhost:5000/comments/post/${post._id}`)
+        fetch(`${API_BASE_URL}/posts/${post._id}`)
             .then(res => res.json())
             .then(data => setComments(Array.isArray(data) ? data : []));
     }, [post._id]);
@@ -26,7 +27,7 @@ function Post({ post, user, onPostDeleted, onPostUpdated }) {
     const handleDelete = async () => {
         if (!confirm("Delete this post?")) return;
 
-        await fetch(`http://localhost:5000/posts/${post._id}`, {
+        await fetch(`${API_BASE_URL}/posts/${post._id}`, {
             method: "DELETE",
             credentials: "include",
         });
@@ -38,7 +39,7 @@ function Post({ post, user, onPostDeleted, onPostUpdated }) {
     const handleSave = async () => {
         const res = await
             fetch(
-                `http://localhost:5000/posts/${post._id}`,
+                `${API_BASE_URL}/posts/${post._id}`,
                 {
                     method: "PUT",
                     headers: { "Content-type": "application/json" },
